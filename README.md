@@ -1,6 +1,6 @@
 # money_tracker
 
-A new Flutter project.
+This is a mobile app built with Flutter that focuses on helping users manage their finances. The app allows users to view their total money, manage their income and expenses, and see their financial history.
 
 ## Getting Started
 
