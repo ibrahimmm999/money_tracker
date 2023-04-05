@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:money_tracker/shared/theme.dart';
 import 'package:money_tracker/widgets/custom_button.dart';
+import 'package:money_tracker/widgets/transaction_tile.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../widgets/custom_popup.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,6 +27,8 @@ class _HomePageState extends State<HomePage> {
       : _panelController.open();
   @override
   Widget build(BuildContext context) {
+    TextEditingController saveMoneyC = TextEditingController(text: " ");
+    TextEditingController payC = TextEditingController(text: " ");
     Widget header() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,14 +107,28 @@ class _HomePageState extends State<HomePage> {
                     buttonColor: primaryColor,
                     widthButton: 145,
                     buttonText: "Save Money",
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => CustomPopUp(
+                            controller: saveMoneyC,
+                            title: "Input your income",
+                            add: () {}),
+                      );
+                    },
                     heightButton: 60),
                 CustomButton(
                     radiusButton: defaultRadius,
                     buttonColor: primaryColor,
                     widthButton: 145,
                     buttonText: "Pay",
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => CustomPopUp(
+                            controller: saveMoneyC, title: "Pay", add: () {}),
+                      );
+                    },
                     heightButton: 60),
               ],
             ),
@@ -130,31 +149,54 @@ class _HomePageState extends State<HomePage> {
           panelBuilder: (controller) {
             return SingleChildScrollView(
               controller: controller,
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: togglePanel,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 15),
-                      height: 6,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          color: lightGreyColor,
-                          borderRadius: BorderRadius.circular(10)),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: defaultMargin, vertical: 15),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: togglePanel,
+                      child: Container(
+                        height: 6,
+                        width: 60,
+                        decoration: BoxDecoration(
+                            color: lightGreyColor,
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    "Transactions History",
-                    style: primaryColorText.copyWith(
-                        fontSize: 18, fontWeight: semibold),
-                  ),
-                  Row(
-                    children: [],
-                  )
-                ],
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      "Transactions History",
+                      style: primaryColorText.copyWith(
+                          fontSize: 18, fontWeight: semibold),
+                    ),
+                    const SizedBox(
+                      height: 36,
+                    ),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                    TransactionTile(),
+                  ],
+                ),
               ),
             );
           },
