@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                         context: context,
                         builder: (context) => CustomPopUp(
                             controller: saveMoneyC,
-                            title: "Input your income",
+                            title: "Save Money",
                             add: () {}),
                       );
                     },

@@ -18,6 +18,8 @@ class CustomPopUp extends StatefulWidget {
 class _CustomPopUpState extends State<CustomPopUp> {
   @override
   Widget build(BuildContext context) {
+    TextEditingController descriptionController =
+        TextEditingController(text: " ");
     return AlertDialog(
       backgroundColor: whiteColor,
       actions: [
@@ -36,25 +38,96 @@ class _CustomPopUpState extends State<CustomPopUp> {
         )
       ],
       title: Text(widget.title, style: primaryColorText),
-      content: TextField(
-        keyboardType: TextInputType.number,
-        controller: widget.controller,
-        style: primaryColorText,
-        cursorColor: primaryColor,
-        decoration: InputDecoration(
-          focusedBorder: UnderlineInputBorder(
-              borderRadius: BorderRadius.circular(defaultRadius),
-              borderSide: BorderSide(color: buttonBlueColor, width: 5)),
-          enabledBorder: UnderlineInputBorder(
-            borderRadius: BorderRadius.circular(defaultRadius),
-            borderSide: BorderSide(
-              color: lightGreyColor,
-              width: 3,
-              style: BorderStyle.solid,
+      content: widget.title == "Pay"
+          ? SizedBox(
+              height: 160,
+              child: Column(
+                children: [
+                  Text(
+                    "Input your income",
+                    style: primaryColorText.copyWith(fontSize: 13),
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    controller: widget.controller,
+                    style: primaryColorText,
+                    cursorColor: primaryColor,
+                    decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(defaultRadius),
+                          borderSide:
+                              BorderSide(color: buttonBlueColor, width: 5)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(defaultRadius),
+                        borderSide: BorderSide(
+                          color: lightGreyColor,
+                          width: 3,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "Description",
+                    style: primaryColorText.copyWith(fontSize: 13),
+                  ),
+                  TextField(
+                    controller: descriptionController,
+                    style: primaryColorText,
+                    cursorColor: primaryColor,
+                    decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(defaultRadius),
+                          borderSide:
+                              BorderSide(color: buttonBlueColor, width: 5)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(defaultRadius),
+                        borderSide: BorderSide(
+                          color: lightGreyColor,
+                          width: 3,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : SizedBox(
+              height: 100,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Input your income",
+                    style: primaryColorText.copyWith(fontSize: 13),
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    controller: widget.controller,
+                    style: primaryColorText,
+                    cursorColor: primaryColor,
+                    decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(defaultRadius),
+                          borderSide:
+                              BorderSide(color: buttonBlueColor, width: 5)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(defaultRadius),
+                        borderSide: BorderSide(
+                          color: lightGreyColor,
+                          width: 3,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
