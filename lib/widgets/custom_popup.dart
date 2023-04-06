@@ -42,6 +42,7 @@ class _CustomPopUpState extends State<CustomPopUp> {
           ? SizedBox(
               height: 160,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Input your income",
