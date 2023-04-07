@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:money_tracker/shared/theme.dart';
 
 class TransactionTile extends StatelessWidget {
-  const TransactionTile({super.key});
+  final String desc;
+  final int nominal;
+  final DateTime time;
+  const TransactionTile(
+      {super.key,
+      required this.desc,
+      required this.nominal,
+      required this.time});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +21,7 @@ class TransactionTile extends StatelessWidget {
           Row(
             children: [
               Image.asset(
-                "assets/save.png",
+                desc == "Save Money" ? "assets/save.png" : "assets/pay.png",
                 width: 30,
                 height: 30,
                 fit: BoxFit.cover,
@@ -26,11 +33,11 @@ class TransactionTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Save Money",
+                    desc,
                     style: primaryColorText,
                   ),
                   Text(
-                    "February 19, 03:25 PM",
+                    time.toString(),
                     style: lightGreyColorText.copyWith(fontSize: 10),
                   )
                 ],
@@ -38,7 +45,7 @@ class TransactionTile extends StatelessWidget {
             ],
           ),
           Text(
-            "+ 100.000",
+            (desc == "Save Money" ? "+ " : "- ") + nominal.toString(),
             style: primaryColorText.copyWith(fontWeight: semibold),
           )
         ],

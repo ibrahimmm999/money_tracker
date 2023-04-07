@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:money_tracker/data/database.dart';
+import 'package:money_tracker/models/transaction_model.dart';
 import 'package:money_tracker/shared/theme.dart';
 import 'package:money_tracker/widgets/custom_button.dart';
 import 'package:money_tracker/widgets/transaction_tile.dart';
@@ -14,21 +17,99 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  PanelController _panelController = PanelController();
+  int savingBalance = 0;
+  final TextEditingController _nominalController =
+      TextEditingController(text: " ");
+  final TextEditingController _descController =
+      TextEditingController(text: " ");
+  final _box = Hive.box("money_tracker");
+  TransactionData db = TransactionData();
+  final PanelController _panelController = PanelController();
 
   @override
   void initState() {
-    // TODO: implement initState
+    if (_box.get("TODOLIST") == null) {
+      db.createInitialData();
+      savingBalance = 0;
+    } else {
+      // there already exists data
+      db.loadData();
+      for (var data in (db.transaction)) {
+        data.description == "Save Money"
+            ? savingBalance += data.nominal
+            : savingBalance -= data.nominal;
+      }
+    }
+
     super.initState();
   }
 
-  void togglePanel() => _panelController.isPanelOpen
-      ? _panelController.close()
-      : _panelController.open();
+  void togglePanel() {
+    _panelController.isPanelOpen
+        ? _panelController.close()
+        : _panelController.open();
+  }
+
+  void createNewTask(String buttonTitle) {
+    showDialog(
+      context: context,
+      builder: (context) => CustomPopUp(
+          nominalController: _nominalController,
+          descController: _descController,
+          title: buttonTitle,
+          add: buttonTitle != "Save Money"
+              ? () {
+                  saveNewPay(
+                      int.parse(_nominalController.text), _descController.text);
+                }
+              : () {
+                  saveNewSaving(int.parse(_nominalController.text));
+                }),
+    );
+    print(db.transaction.length);
+  }
+
+  // delete task
+  void deleteTask(int index) {
+    setState(() {
+      db.transaction.removeAt(index);
+    });
+    db.updateDataBase();
+  }
+
+  void saveNewPay(int nom, String desc) {
+    setState(() {
+      db.transaction.add(TransactionModel(
+          id: db.transaction.length,
+          time: DateTime.now(),
+          nominal: nom,
+          description: desc));
+      _nominalController.clear();
+      _descController.clear();
+      savingBalance -= nom;
+    });
+    Navigator.of(context).pop();
+    db.updateDataBase();
+  }
+
+  void saveNewSaving(
+    int nom,
+  ) {
+    setState(() {
+      savingBalance += nom;
+      db.transaction.add(TransactionModel(
+          id: db.transaction.length,
+          time: DateTime.now(),
+          nominal: nom,
+          description: "Save"));
+      _nominalController.clear();
+    });
+    Navigator.of(context).pop();
+    db.updateDataBase();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController saveMoneyC = TextEditingController(text: " ");
-    TextEditingController payC = TextEditingController(text: " ");
     Widget header() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                     height: 12,
                   ),
                   Text(
-                    "Rp. 10.430.000",
+                    savingBalance.toString(),
                     style: whiteColorText.copyWith(
                         fontSize: 24, fontWeight: semibold),
                   )
@@ -108,27 +189,20 @@ class _HomePageState extends State<HomePage> {
                     widthButton: 145,
                     buttonText: "Save Money",
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => CustomPopUp(
-                            controller: saveMoneyC,
-                            title: "Save Money",
-                            add: () {}),
-                      );
+                      createNewTask("Save Money");
                     },
                     heightButton: 60),
                 CustomButton(
                     radiusButton: defaultRadius,
-                    buttonColor: primaryColor,
+                    buttonColor:
+                        savingBalance > 0 ? primaryColor : lightGreyColor,
                     widthButton: 145,
                     buttonText: "Pay",
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => CustomPopUp(
-                            controller: saveMoneyC, title: "Pay", add: () {}),
-                      );
-                    },
+                    onPressed: savingBalance > 0
+                        ? () {
+                            createNewTask("Pay");
+                          }
+                        : () {},
                     heightButton: 60),
               ],
             ),
@@ -175,26 +249,24 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 36,
                     ),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
-                    TransactionTile(),
+                    db.transaction.length > 0
+                        ? Column(
+                            children: db.transaction
+                                .map(
+                                  (data) => TransactionTile(
+                                      desc: data.description,
+                                      nominal: data.nominal,
+                                      time: data.time),
+                                )
+                                .toList(),
+                          )
+                        : Container(
+                            margin: const EdgeInsets.only(top: 50),
+                            child: Text(
+                              "No Transaction",
+                              style: primaryColorText.copyWith(fontSize: 16),
+                            ),
+                          )
                   ],
                 ),
               ),

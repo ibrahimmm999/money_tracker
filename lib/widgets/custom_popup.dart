@@ -3,13 +3,15 @@ import 'package:money_tracker/shared/theme.dart';
 
 class CustomPopUp extends StatefulWidget {
   final String title;
-  final Function() add;
-  final TextEditingController controller;
+  final Function add;
+  final TextEditingController nominalController;
+  final TextEditingController descController;
   const CustomPopUp(
       {super.key,
       required this.title,
       required this.add,
-      required this.controller});
+      required this.nominalController,
+      required this.descController});
 
   @override
   State<CustomPopUp> createState() => _CustomPopUpState();
@@ -18,8 +20,6 @@ class CustomPopUp extends StatefulWidget {
 class _CustomPopUpState extends State<CustomPopUp> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController descriptionController =
-        TextEditingController(text: " ");
     return AlertDialog(
       backgroundColor: whiteColor,
       actions: [
@@ -30,7 +30,10 @@ class _CustomPopUpState extends State<CustomPopUp> {
           child: Text('CANCEL', style: primaryColorText),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: (() {
+            widget.add;
+            Navigator.pop(context);
+          }),
           child: Text(
             'SAVE',
             style: primaryColorText,
@@ -50,7 +53,7 @@ class _CustomPopUpState extends State<CustomPopUp> {
                   ),
                   TextField(
                     keyboardType: TextInputType.number,
-                    controller: widget.controller,
+                    controller: widget.nominalController,
                     style: primaryColorText,
                     cursorColor: primaryColor,
                     decoration: InputDecoration(
@@ -76,7 +79,7 @@ class _CustomPopUpState extends State<CustomPopUp> {
                     style: primaryColorText.copyWith(fontSize: 13),
                   ),
                   TextField(
-                    controller: descriptionController,
+                    controller: widget.descController,
                     style: primaryColorText,
                     cursorColor: primaryColor,
                     decoration: InputDecoration(
@@ -108,7 +111,7 @@ class _CustomPopUpState extends State<CustomPopUp> {
                   ),
                   TextField(
                     keyboardType: TextInputType.number,
-                    controller: widget.controller,
+                    controller: widget.nominalController,
                     style: primaryColorText,
                     cursorColor: primaryColor,
                     decoration: InputDecoration(
